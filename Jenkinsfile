@@ -45,10 +45,17 @@ spec:
         echo "file from maven container - ${env.BUILD_TAG}" >> ./maven.txt
         pwd
         ls -lah
+        env
         """
-        sh "mvn test"
-        sh "mvn clean package"
       }
+    }
+
+    stage('Test') {
+        sh "mvn test"
+    }
+
+    stage('Package') {
+        sh "mvn clean package"
     }
 
     stage('Test Kaniko Container') {
