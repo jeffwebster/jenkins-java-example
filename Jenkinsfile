@@ -68,9 +68,10 @@ spec:
       stage('Build Image') {
         container('kaniko') {
           // sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=mydockerregistry:5000/myorg/myimage'
-          sh '/kaniko/executor --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --no-push'
+          sh "/kaniko/executor --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --no-push"
           sh 'ls -lah'
         }
+      }
     }
 
   } // node(POD_LABEL) {
