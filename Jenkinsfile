@@ -70,6 +70,7 @@ spec:
         ls -lah
         ls -lah target
         ls -lah  ../
+        ls -la /kaniko
         """
       }
     }
