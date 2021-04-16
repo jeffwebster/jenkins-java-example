@@ -34,6 +34,9 @@ spec:
 
   node(POD_LABEL) {
 
+    echo "BRANCH_NAME: ${env.BRANCH_NAME}"
+    checkout scm
+    
     stage('Test Maven Container') {
       container('maven') {
         sh """
