@@ -67,7 +67,7 @@ spec:
     ]) {
       stage('Build Image') {
         container('kaniko') {
-          sh "/kaniko/executor --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --no-push"
+          sh "/kaniko/executor --context=${env.PWD} --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --no-push"
           sh 'ls -lah'
         }
       }
