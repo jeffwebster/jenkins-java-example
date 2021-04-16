@@ -69,22 +69,23 @@ spec:
         pwd
         ls -lah
         ls -lah target
+        ls -lah  ../
         """
       }
     }
 
-    withEnv([
-      "DOCKERFILE=Dockerfile",
-      "BUILD_JAR_NAME=spring-boot-0.0.1-SNAPSHOT.jar",
-      "DESTINATION=jwebster2/my-repo",
-      "TAG_NAME=gs-spring-boot"
-    ]) {
-      stage('Build Image') {
-        container('kaniko') {
-          sh "/kaniko/executor --insecure --skip-tls-verify --context=${env.WORKSPACE} --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --destination=${env.DESTINATION}:${env.TAG_NAME}"
-        }
-      }
-    }
+    // withEnv([
+    //   "DOCKERFILE=Dockerfile",
+    //   "BUILD_JAR_NAME=spring-boot-0.0.1-SNAPSHOT.jar",
+    //   "DESTINATION=jwebster2/my-repo",
+    //   "TAG_NAME=gs-spring-boot"
+    // ]) {
+    //   stage('Build Image') {
+    //     container('kaniko') {
+    //       sh "/kaniko/executor --insecure --skip-tls-verify --context=${env.WORKSPACE} --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --destination=${env.DESTINATION}:${env.TAG_NAME}"
+    //     }
+    //   }
+    // }
 
   } // node(POD_LABEL) {
 }
