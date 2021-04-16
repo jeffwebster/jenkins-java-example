@@ -51,11 +51,15 @@ spec:
     }
 
     stage('Test') {
+      container('maven') {
         sh "mvn test"
+       }
     }
 
     stage('Package') {
+      container('maven') {
         sh "mvn clean package"
+      }
     }
 
     stage('Test Kaniko Container') {
