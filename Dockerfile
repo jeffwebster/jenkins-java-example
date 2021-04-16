@@ -1,7 +1,7 @@
 FROM adoptopenjdk/openjdk11:alpine-jre
 
-ARG build_jar_name
+ARG build_jar_path
 
-COPY ./target/${build_jar_name} /app.jar
+COPY ${build_jar_path} /app.jar
 
 CMD ["java", "-jar", "/app.jar"]
