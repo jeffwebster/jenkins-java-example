@@ -1,16 +1,5 @@
-/* Requires the Docker Pipeline plugin */
-// node {
-//     echo "BRANCH_NAME: ${env.BRANCH_NAME}"
-//     checkout scm
-//     stage('Build') {
-//         docker.image('maven:latest').inside {
-//             sh 'mvn --version'
-//         }
-//     }
-// }
-
 /**
- * This pipeline describes a multi container job, running Maven and Nodejs builds
+ * This pipeline describes a multi container job, running Maven and Kaniko
  */
 
 podTemplate(yaml: """
@@ -42,15 +31,15 @@ spec:
         sh """
         echo "Hello from maven container"
         mvn -version
-        echo "file from maven container - ${env.BUILD_TAG}" >> ./maven.txt
+        //echo "file from maven container - ${env.BUILD_TAG}" >> ./maven.txt
         pwd
         ls -lah
-        env
+        env|sort
         """
       }
     }
 
-    stage('Test') {
+    stage('Unit Test') {
       container('maven') {
         sh "mvn test"
        }
@@ -64,11 +53,25 @@ spec:
 
     stage('Test Kaniko Container') {
       container('kaniko') {
-        sh 'pwd'
-        sh 'ls -lah'
-        sh 'cat ./maven.txt'
+        sh """
+        pwd
+        ls -lah
+        //cat ./maven.txt
+        """
       }
     }
 
-  }
+    withEnv([
+      'DOCKERFILE=Dockerfile',
+      'BUILD_JAR_NAME=target/spring-boot-0.0.1-SNAPSHOT.jar'
+    ]) {
+      stage('Build Image') {
+        container('kaniko') {
+          // sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=mydockerregistry:5000/myorg/myimage'
+          sh '/kaniko/executor --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --no-push'
+          sh 'ls -lah'
+        }
+    }
+
+  } // node(POD_LABEL) {
 }
