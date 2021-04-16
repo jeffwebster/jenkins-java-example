@@ -1,5 +1,8 @@
 /**
  * This pipeline describes a multi container job, running Maven and Kaniko
+ * NOTE:
+ * Kaniko does not support docker registry api v2: https://index.docker.io/v2/
+ * Therefore a secret with v1 is required: https://index.docker.io/v1/
  */
 
 podTemplate(yaml: """
@@ -72,7 +75,6 @@ spec:
         ls -lah  ../
         ls -la /kaniko
         ls -la /
-        cat /kaniko/.docker/config.json
         """
       }
     }
@@ -85,7 +87,13 @@ spec:
     ]) {
       stage('Build Image') {
         container('kaniko') {
-          sh "/kaniko/executor --skip-tls-verify --context=${env.WORKSPACE} --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --destination=${env.DESTINATION}:${env.TAG_NAME}"
+          //sh "/kaniko/executor --skip-tls-verify --context=${env.WORKSPACE} --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --destination=${env.DESTINATION}:${env.TAG_NAME}"
+          sh """
+           /kaniko/executor --skip-tls-verify \
+           --context=${env.WORKSPACE} --dockerfile=${env.DOCKERFILE} \
+           --build-arg build_jar_name=${env.BUILD_JAR_NAME}  \
+           --destination=${env.DESTINATION}:${env.TAG_NAME}
+          """
         }
       }
     }
