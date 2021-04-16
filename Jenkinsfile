@@ -31,7 +31,6 @@ spec:
         sh """
         echo "Hello from maven container"
         mvn -version
-        //echo "file from maven container - ${env.BUILD_TAG}" >> ./maven.txt
         pwd
         ls -lah
         env|sort
@@ -54,9 +53,9 @@ spec:
     stage('Test Kaniko Container') {
       container('kaniko') {
         sh """
+        echo "Hello from kaniko container"
         pwd
         ls -lah
-        //cat ./maven.txt
         """
       }
     }
@@ -67,7 +66,6 @@ spec:
     ]) {
       stage('Build Image') {
         container('kaniko') {
-          // sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=mydockerregistry:5000/myorg/myimage'
           sh "/kaniko/executor --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --no-push"
           sh 'ls -lah'
         }
