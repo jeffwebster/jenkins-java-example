@@ -8,6 +8,15 @@ kind: Pod
 spec:
   imagePullSecrets:
   - name: regcred
+  volumes:
+  - name: jenkins-docker-cfg
+    projected:
+      sources:
+      - secret:
+          name: regcred
+          items:
+            - key: .dockerconfigjson
+              path: config.json
   containers:
   - name: maven
     image: jwebster2/my-repo:jenkins-builder-maven-0.1.0
@@ -18,6 +27,9 @@ spec:
     entrypoint: [""]
     command: ["sleep"]
     args: ["3650d"]
+    volumeMounts:
+    - name: jenkins-docker-cfg
+      mountPath: /kaniko/.docker
 """
   ) {
 
@@ -64,12 +76,12 @@ spec:
     withEnv([
       "DOCKERFILE=Dockerfile",
       "BUILD_JAR_NAME=spring-boot-0.0.1-SNAPSHOT.jar",
-      "CONTEXT_DIR=${env.WORKSPACE}"
+      "DESTINATION=jwebster2/my-repo",
+      "TAG_NAME=gs-spring-boot"
     ]) {
       stage('Build Image') {
         container('kaniko') {
-          sh "/kaniko/executor --context=${env.WORKSPACE} --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --no-push"
-          sh 'ls -lah'
+          sh "/kaniko/executor --insecure --skip-tls-verify --context=${env.WORKSPACE} --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --destination=${env.DESTINATION}:${env.TAG_NAME}"
         }
       }
     }
