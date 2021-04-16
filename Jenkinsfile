@@ -36,7 +36,7 @@ spec:
 
     echo "BRANCH_NAME: ${env.BRANCH_NAME}"
     checkout scm
-    
+
     stage('Test Maven Container') {
       container('maven') {
         sh """
@@ -46,6 +46,8 @@ spec:
         pwd
         ls -lah
         """
+        sh "mvn test"
+        sh "mvn clean package"
       }
     }
 
