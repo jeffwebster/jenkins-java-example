@@ -71,6 +71,8 @@ spec:
         ls -lah target
         ls -lah  ../
         ls -la /kaniko
+        ls -la /
+        cat /kaniko/.docker/config.json
         """
       }
     }
