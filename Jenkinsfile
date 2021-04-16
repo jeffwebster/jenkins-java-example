@@ -63,11 +63,12 @@ spec:
 
     withEnv([
       "DOCKERFILE=Dockerfile",
-      "BUILD_JAR_NAME=spring-boot-0.0.1-SNAPSHOT.jar"
+      "BUILD_JAR_NAME=spring-boot-0.0.1-SNAPSHOT.jar",
+      "CONTEXT_DIR=${env.WORKSPACE}"
     ]) {
       stage('Build Image') {
         container('kaniko') {
-          sh "/kaniko/executor --context=${env.PWD} --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --no-push"
+          sh "/kaniko/executor --context=${env.CONTEXT_DIR} --dockerfile=${env.DOCKERFILE} --build-arg build_jar_name=${env.BUILD_JAR_NAME}  --no-push"
           sh 'ls -lah'
         }
       }
