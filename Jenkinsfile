@@ -62,7 +62,7 @@ spec:
 
     withEnv([
       'DOCKERFILE=Dockerfile',
-      'BUILD_JAR_NAME=target/spring-boot-0.0.1-SNAPSHOT.jar'
+      'BUILD_JAR_NAME=spring-boot-0.0.1-SNAPSHOT.jar'
     ]) {
       stage('Build Image') {
         container('kaniko') {
